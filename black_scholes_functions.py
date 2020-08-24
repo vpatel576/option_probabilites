@@ -1,3 +1,6 @@
+from scipy.stats import norm
+import numpy as np
+
 def d(sigma, S, K, r, t):
     d1 = 1 / (sigma * np.sqrt(t)) * ( np.log(S/K) + (r + sigma**2/2) * t)
     d2 = d1 - sigma * np.sqrt(t)
