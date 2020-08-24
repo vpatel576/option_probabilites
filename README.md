@@ -7,4 +7,4 @@ https://www.newyorkfed.org/medialibrary/media/research/staff_reports/sr677.pdf
 https://www.mathworks.com/company/newsletters/articles/estimating-option-implied-probability-distributions-for-asset-pricing.html
 
 
-#Currently working on getting updated data from TD ameritrade API. Yahoo options data isn't the best
+Currently working on getting updated data from TD ameritrade API. Yahoo options data isn't the best
