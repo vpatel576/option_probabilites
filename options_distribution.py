@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 import requests
 
 from black_scholes_functions import d,call_price,put_price
-import td_data
+from td_data import get_hist
 
 #Inputs for company ticker and Puts or Calls
 ticker = input('Ticker: ')
