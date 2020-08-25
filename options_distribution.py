@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 import requests
 
 from black_scholes_functions import d,call_price,put_price
-
+import td_data
 
 #Inputs for company ticker and Puts or Calls
 ticker = input('Ticker: ')
@@ -40,22 +40,30 @@ vol_dist = []
 strikes = []
 all_strike = np.linspace(curr_price*(1-.8), curr_price*(1+.8), 30)
 
-for i in range(len(exp_dates)):
-    opt = comp.option_chain(exp_dates[i])
-    if 'call' in C_or_P.lower():
-        vals = opt.calls
-    elif 'put' in C_or_P.lower():
-        vals = opt.puts    
+#Grabbing options data
 
-    x_vals = vals['strike']
-    y_vals = vals['impliedVolatility']
+data = get_hist(symbol = ticker,contractType=C_or_P.upper(),strikeCount=10)
+dates = list(data['callExpDateMap'].keys())
+strikes = list(data['callExpDateMap'][dates[0]].keys())
+
+strikes = []
+vol = []
+
+for d in dates:
+    s = list(data['callExpDateMap'][d].keys())
+    v = []
+    for str in s:
+        v.append(data['callExpDateMap'][d][str][0]['volatility'])
+    
+    v = [float(i) for i in v]
+    s = [float(i) for i in s]
     
     #Based on the highest and lowest strike price for each expiration date, it interpolates the existing data 
     #and creates a second degree function.Currently it only uses 30 data points but that number can increase it to get 
     #smoother distribution
     
     poly_deg = 2
-    coefs = np.polyfit(x_vals, y_vals, poly_deg)
+    coefs = np.polyfit(s, v, poly_deg)
     vols = np.polyval(coefs, all_strike)
     vol_dist.append(list(vols))
     strikes.append(list(all_strike))
@@ -63,7 +71,7 @@ for i in range(len(exp_dates)):
     #Once the volatility values are obtained (in variable 'vols'), a plot of it is created.
     #it looks at +- 80% of current strike price and makes sure strike price range is same for all the expiration dates
     
-    plt.plot(all_strike,vols, label = exp_dates[i])
+    plt.plot(all_strike,vols, label = d)
     plt.axvline(curr_price, color='red', linestyle='--')
     plt.xlabel('Strike Prices')
     plt.ylabel('Implied Volatility')
